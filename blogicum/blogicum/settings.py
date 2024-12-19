@@ -9,16 +9,19 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 
-django_sprinr1
+django_sprint1
 В список INSTALLED_APPS добавлены приложения blog и pages. Назначена переменная
 TEMPLATES_DIR, в которой хранится путь до директории templates. Эта пересенная
 указана в TEMPLATES в значении ключа DIRS. Назначен список STATICFILES_DIRS,
 который хранит путь до директории со статическими файлами.
 
-django_sprinr3
+django_sprint3
 В список INSTALLED_APPS и MIDDLEWARE добавлены debug_toolbar. Назначена
 переменная INTERNAL_IPS для debug_toolbar. Проведена
 локализация(изменеа константа LANGUAGE_CODE = 'ru-RU')
+
+django_sprint4
+Добавлена константа с кастомной моделью пользователя. 
 """
 
 from pathlib import Path
@@ -38,6 +41,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Вместо стандартной модели пользователя будет использоваться кастомная
+AUTH_USER_MODEL = 'users.MyUser'
 
 # Application definition
 
@@ -50,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pages.apps.PagesConfig',
     'blog.apps.BlogConfig',
+    'users.apps.UsersConfig',
     'debug_toolbar',
 ]
 

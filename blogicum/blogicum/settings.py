@@ -21,7 +21,8 @@ django_sprint3
 локализация(изменеа константа LANGUAGE_CODE = 'ru-RU')
 
 django_sprint4
-Добавлена константа с кастомной моделью пользователя. 
+Добавлена константа с кастомной моделью пользователя AUTH_USER_MODEL. Подключен
+бэкенд EMAIL константы: EMAIL_BACKEND и путь до дериктории EMAIL_FILE_PATH.
 """
 
 from pathlib import Path
@@ -41,7 +42,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Вместо стандартной модели пользователя будет использоваться кастомная
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+
 AUTH_USER_MODEL = 'users.MyUser'
 
 # Application definition

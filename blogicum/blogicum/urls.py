@@ -15,8 +15,9 @@ Including another URLconf
 
 В списке urlpatterns указываются адреса которые обрабатывает django. Добавлены
 три адреса: 1) '' - главная страница переадресовывается в приложении blog;
-2) 'pages/' - дополнительные страницы, которые переадресовываются в приложении
-pages; 3) 'admin/' - панель администраторв.
+2)'admin/' - панель администраторв 3) 'pages/' - дополнительные страницы,
+которые переадресовываются в приложении pages; 4) 'auth/' - модуль
+аутентификации. 5) 'auth/registration/' - страница регистрации пользователей.
 """
 
 
@@ -24,10 +25,26 @@ from django.urls import include, path
 from django.contrib import admin
 from django.conf import settings
 
+from django.views.generic.edit import CreateView
+
+from django.urls import include, path, reverse_lazy
+
+from users.models import CustomUserCreationForm
+
 urlpatterns = [
     path('', include('blog.urls')),
-    path('pages/', include('pages.urls')),
     path('admin/', admin.site.urls),
+    path('pages/', include('pages.urls')),
+    path('auth/', include('django.contrib.auth.urls')),
+    path(
+        'auth/registration/',
+        CreateView.as_view(
+            template_name='registration/registration_form.html',
+            form_class=CustomUserCreationForm,
+            success_url=reverse_lazy('blog:index'),
+        ),
+        name='registration',
+    ),
 ]
 
 if settings.DEBUG:

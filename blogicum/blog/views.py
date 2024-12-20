@@ -8,7 +8,7 @@ category_posts - страница с категорией постов.
 
 from django.shortcuts import get_object_or_404, render
 from blog.models import Post, Category
-from blog.sql_filters import sql_filters
+from .utils import sql_filters
 
 
 def index(request):

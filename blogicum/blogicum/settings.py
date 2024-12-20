@@ -23,6 +23,9 @@ django_sprint3
 django_sprint4
 Добавлена константа с кастомной моделью пользователя AUTH_USER_MODEL. Подключен
 бэкенд EMAIL константы: EMAIL_BACKEND и путь до дериктории EMAIL_FILE_PATH.
+Добавлены адрес страницы логина LOGIN_URL и LOGIN_REDIRECT_URL. Добавоены
+разрешенные хосты ALLOWED_HOSTS. Установлены и зарегестрированы стили 
+django_bootstrap5.
 """
 
 from pathlib import Path
@@ -40,7 +43,14 @@ SECRET_KEY = 'django-insecure-fn41u7c-1z+jwd#dvpeo0m1j-w^s5si#@!*x&4zx-!1!2u@+=h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+LOGIN_URL = 'login'
+
+LOGIN_REDIRECT_URL = 'blog:index'
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+]
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
@@ -60,6 +70,7 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig',
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
+    'django_bootstrap5',
     'debug_toolbar',
 ]
 

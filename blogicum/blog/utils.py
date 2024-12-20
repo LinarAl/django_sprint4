@@ -1,4 +1,4 @@
-"""Фильтры для SQL запросов"""
+"""Дополнительные функции"""
 from datetime import datetime
 
 

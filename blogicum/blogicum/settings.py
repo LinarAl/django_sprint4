@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig',
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
+    'core.apps.CoreConfig',
     'django_bootstrap5',
     'debug_toolbar',
 ]

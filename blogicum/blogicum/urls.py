@@ -29,7 +29,7 @@ from django.views.generic.edit import CreateView
 
 from django.urls import include, path, reverse_lazy
 
-from users.models import CustomUserCreationForm
+from users.forms import CustomUserCreationForm
 
 urlpatterns = [
     path('', include('blog.urls')),

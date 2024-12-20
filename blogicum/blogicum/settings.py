@@ -25,7 +25,8 @@ django_sprint4
 бэкенд EMAIL константы: EMAIL_BACKEND и путь до дериктории EMAIL_FILE_PATH.
 Добавлены адрес страницы логина LOGIN_URL и LOGIN_REDIRECT_URL. Добавоены
 разрешенные хосты ALLOWED_HOSTS. Установлены и зарегестрированы стили 
-django_bootstrap5.
+django_bootstrap5. Зарегестрировано приложение core. Добавлена константа
+CSRF_FAILURE_VIEW - ошибка проверки CSRF (403).
 """
 
 from pathlib import Path
@@ -41,7 +42,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-fn41u7c-1z+jwd#dvpeo0m1j-w^s5si#@!*x&4zx-!1!2u@+=h'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 LOGIN_URL = 'login'
 
@@ -52,6 +53,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
+CSRF_FAILURE_VIEW = 'core.views.page_csrf_failure'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'

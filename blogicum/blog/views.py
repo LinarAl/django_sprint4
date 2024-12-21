@@ -9,6 +9,15 @@ category_posts - страница с категорией постов.
 from django.shortcuts import get_object_or_404, render
 from blog.models import Post, Category
 from .utils import sql_filters
+from django.contrib.auth import get_user_model
+
+from django.views.generic.edit import UpdateView, CreateView
+from users.forms import CustomUserChangeForm, CustomUserCreationForm
+from django.urls import reverse_lazy
+
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+User = get_user_model()
 
 
 def index(request):
@@ -45,3 +54,23 @@ def category_posts(request, category_slug):
     ).order_by('-pub_date', 'title')
     context = {'category': category, 'post_list': post_list}
     return render(request, template, context)
+
+
+def profile(request, username):
+    """Обработка страницы профиль пользователя."""
+    template = 'blog/profile.html'
+    profile = get_object_or_404(
+        User,
+        username=username
+    )
+    context = {'profile': profile}
+    return render(request, template, context)
+
+
+# class EditProfile(UpdateView):
+#     """Обработка страницы редактирования профиля пользователя."""
+
+#     model = User,
+#     template_name = 'blog/user.html',
+#     form_class = CustomUserChangeForm,
+#     success_url = reverse_lazy('blog:index')

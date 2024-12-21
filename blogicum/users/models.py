@@ -5,8 +5,7 @@ from django.db import models
 
 class MyUser(AbstractUser):
     """Переопределена стандартная модель. Есть возможность изменять ее в
-    будущем"""
+    будущем
+    """
+
     pass
-
-
-

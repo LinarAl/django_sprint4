@@ -8,16 +8,39 @@ name.
 <int:id> - означает что id целое число; пример запроса: posts/2/
 
 <slug:category_slug> - означает что category_slug состоит из простых символов и
-цифор; пример запроса: posts/some-t-1/.
+цифр; пример запроса: posts/some-t-1/.
 """
 
 
-from django.urls import path
+from django.urls import path, reverse_lazy
 from blog import views
+
+from users.forms import CustomUserChangeForm
+from django.views.generic.edit import CreateView, UpdateView
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 app_name = 'blog'
 urlpatterns = [
     path('', views.index, name='index'),
+    path('profile/<slug:username>/', views.profile, name='profile'),
+    # path('profile/<int:pk>/edit/',
+    #      views.EditProfile.as_view(), name='edit_profile'),
+
+
+    path(
+        'profile/<int:pk>/edit/',
+        UpdateView.as_view(
+            model=User,
+            template_name='blog/user.html',
+            form_class=CustomUserChangeForm,
+            success_url=reverse_lazy('blog:index'),
+        ),
+        name='edit_profile',
+    ),
+
     path('posts/<int:id>/', views.post_detail, name='post_detail'),
     path('category/<slug:category_slug>/',
          views.category_posts, name='category_posts'),

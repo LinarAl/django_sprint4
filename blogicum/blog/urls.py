@@ -24,8 +24,8 @@ User = get_user_model()
 
 app_name = 'blog'
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('profile/<slug:username>/', views.profile, name='profile'),
+    path('', views.PostListView.as_view(), name='index'),
+    path('profile/<slug:username>/', views.ProfileView.as_view(), name='profile'),
     # path('profile/<int:pk>/edit/',
     #      views.EditProfile.as_view(), name='edit_profile'),
 
@@ -41,7 +41,10 @@ urlpatterns = [
         name='edit_profile',
     ),
 
-    path('posts/<int:id>/', views.post_detail, name='post_detail'),
+    path('posts/<int:id>/', views.PostDetailView.as_view(), name='post_detail'),
+
     path('category/<slug:category_slug>/',
-         views.category_posts, name='category_posts'),
+         views.CategoryPostsView.as_view(), name='category_posts'),
+    
+    path('posts/create/', views.PostCreateView.as_view(), name='create'),
 ]

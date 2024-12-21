@@ -17,8 +17,19 @@ from .utils import sql_filters
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 
+from .forms import PostForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+
 User = get_user_model()
 
+
+class OnlyAuthorMixin(UserPassesTestMixin):
+
+    def test_func(self):
+        object = self.get_object()
+        return object.author == self.request.user
 
 # def index(request):
 #     """Обработка страницы с постами."""
@@ -164,13 +175,37 @@ class ProfileView(ListView):
         return context
 
 
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
     """Страница создания поста."""
 
     model = Post
-    fields = '__all__'
+    form_class = PostForm
     template_name = 'blog/create.html'
     success_url = reverse_lazy('blog:index')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+
+class PostUpdateView(OnlyAuthorMixin, UpdateView):
+    """Страница редактирования поста."""
+
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/create.html'
+    pk_url_kwarg = 'post_id'
+    success_url = reverse_lazy('blog:index')
+
+
+class PostDeleteView(OnlyAuthorMixin, DeleteView):
+    """Страница удаления поста."""
+
+    model = Post
+    template_name = 'blog/create.html'
+    pk_url_kwarg = 'post_id'
+    success_url = reverse_lazy('blog:index')
+
 
 # class EditProfile(UpdateView):
 #     """Обработка страницы редактирования профиля пользователя."""

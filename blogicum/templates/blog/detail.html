@@ -26,7 +26,7 @@
           </small>
         </h6>
         <p class="card-text">{{ post.text|linebreaksbr }}</p>
-        {% comment %} {% if user == post.author %}
+        {% if user == post.author %}
           <div class="mb-2">
             <a class="btn btn-sm text-muted" href="{% url 'blog:edit_post' post.id %}" role="button">
               Отредактировать публикацию
@@ -35,8 +35,8 @@
               Удалить публикацию
             </a>
           </div>
-        {% endif %} {% endcomment %}
-        {% comment %} {% include "includes/comments.html" %} {% endcomment %}
+        {% endif %}
+        {% include "includes/comments.html" %}
       </div>
     </div>
   </div>

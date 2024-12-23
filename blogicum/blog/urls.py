@@ -16,7 +16,7 @@ from django.urls import path, reverse_lazy
 from blog import views
 
 from users.forms import CustomUserChangeForm
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import UpdateView
 
 from django.contrib.auth import get_user_model
 
@@ -25,7 +25,8 @@ User = get_user_model()
 app_name = 'blog'
 urlpatterns = [
     path('', views.PostListView.as_view(), name='index'),
-    path('profile/<slug:username>/', views.ProfileView.as_view(), name='profile'),
+    path('profile/<slug:username>/', views.ProfileView.as_view(),
+         name='profile'),
     # path('profile/<int:pk>/edit/',
     #      views.EditProfile.as_view(), name='edit_profile'),
 
@@ -41,7 +42,8 @@ urlpatterns = [
         name='edit_profile',
     ),
 
-    path('posts/<int:post_id>/', views.PostDetailView.as_view(), name='post_detail'),
+    path('posts/<int:post_id>/', views.PostDetailView.as_view(),
+         name='post_detail'),
 
     path('category/<slug:category_slug>/',
          views.CategoryPostsView.as_view(), name='category_posts'),
@@ -52,7 +54,8 @@ urlpatterns = [
     path('posts/<int:post_id>/delete/',
          views.PostDeleteView.as_view(), name='delete_post'),
 
-    path('posts/<int:post_id>/comment/', views.add_comment, name='add_comment'),
+    path('posts/<int:post_id>/comment/', views.add_comment,
+         name='add_comment'),
     path('posts/<int:post_id>/edit_comment/<int:comment_id>/',
          views.EditComment.as_view(), name='edit_comment'),
     path('posts/<int:post_id>/delete_comment/<int:comment_id>/',

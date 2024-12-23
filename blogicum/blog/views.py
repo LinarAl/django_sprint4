@@ -9,7 +9,6 @@ from django.db.models import Count
 from django.views.generic import (
     CreateView, DeleteView, DetailView, ListView, UpdateView
 )
-from django.core.paginator import Paginator
 
 from django.shortcuts import get_object_or_404, redirect
 from blog.models import Post, Category, Comment
@@ -23,6 +22,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+
 
 User = get_user_model()
 
@@ -82,23 +82,26 @@ class DeleteComment(OnlyAuthorMixin, DeleteView):
 class PostListView(ListView):
     """Cтраница с постами."""
 
+    paginate_by = 10
+    ordering = '-pub_date', 'title'
     model = Post
     template_name = 'blog/index.html'
-    context_object_name = 'page_obj'
+    # context_object_name = 'page_obj'
 
     def get_queryset(self):
-        return sql_filters(Post.objects.select_related(
-            'category', 'location', 'author',)).annotate(comment_count=Count("comments"))
 
+        return sql_filters(Post.objects.select_related(
+            'category', 'location', 'author',)).annotate(
+                comment_count=Count("comments"))
 
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
-
-    #         'category', 'author', 'location',)
-    #     paginator = Paginator(posts, 10)
-    #     page_number = self.request.GET.get('page')
-    #     page_obj = paginator.get_page(page_number)
-    #     context['page_obj'] = page_obj
+    #     print(context['paginator'].page(1).object_list)
+    # #         'category', 'author', 'location',)
+    # #     paginator = Paginator(posts, 10)
+    # #     page_number = self.request.GET.get('page')
+    # #     page_obj = paginator.get_page(page_number)
+    # #     context['page_obj'] = page_obj
     #     return context
 
 
@@ -129,7 +132,8 @@ class PostDetailView(DetailView):
         context['comments'] = (
             # Дополнительно подгружаем авторов комментариев,
             # чтобы избежать множества запросов к БД.
-            self.object.comments.select_related('author')
+            self.object.comments.select_related(
+                'author')
         )
         return context
 
@@ -137,9 +141,11 @@ class PostDetailView(DetailView):
 class CategoryPostsView(ListView):
     """Cтраница с постами по категории."""
 
+    paginate_by = 10
+    ordering = '-pub_date', 'title'
     model = Post
     template_name = 'blog/category.html'
-    context_object_name = 'page_obj'
+    # context_object_name = 'page_obj'
 
     def get_queryset(self):
         return sql_filters(Post.objects.select_related(
@@ -161,9 +167,11 @@ class CategoryPostsView(ListView):
 class ProfileView(ListView):
     """Страница профиля пользователя."""
 
+    paginate_by = 10
+    ordering = '-pub_date', 'title'
     model = Post
     template_name = 'blog/profile.html'
-    context_object_name = 'page_obj'
+    # context_object_name = 'page_obj'
 
     def get_queryset(self):
         """Запрос к бд с фильрами.
@@ -175,7 +183,8 @@ class ProfileView(ListView):
             author = True
         return sql_filters(Post.objects.select_related(
             'category', 'location', 'author'
-        ).filter(author__username=self.kwargs['username']).annotate(comment_count=Count("comments")), author)
+        ).filter(author__username=self.kwargs['username']).annotate(
+            comment_count=Count("comments")), author)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

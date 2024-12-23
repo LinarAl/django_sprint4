@@ -139,6 +139,7 @@ class Post(BaseModel):
         related_name='posts',
         verbose_name='Категория'
     )
+    image = models.ImageField('Фото', upload_to='posts_images', blank=True)
 
     class Meta:
         """Метамодель.

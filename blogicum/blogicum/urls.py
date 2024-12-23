@@ -18,7 +18,8 @@ Including another URLconf
 2)'admin/' - панель администраторв 3) 'pages/' - дополнительные страницы,
 которые переадресовываются в приложении pages; 4) 'auth/' - модуль
 аутентификации. 5) 'auth/registration/' - страница регистрации пользователей.
-Добавлены handler404 и handler500 - адрес view-функции с ошибками.
+Добавлены handler404 и handler500 - адрес view-функции с ошибками. Если включен
+режим отладки, то подключаем toolbar и статику.
 """
 
 
@@ -31,6 +32,7 @@ from django.views.generic.edit import CreateView
 from django.urls import include, path, reverse_lazy
 
 from users.forms import CustomUserCreationForm
+from django.conf.urls.static import static
 
 handler404 = 'core.views.page_not_found'
 handler500 = 'core.views.page_server_error'
@@ -54,3 +56,6 @@ urlpatterns = [
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += (path('__debug__/', include(debug_toolbar.urls)),)
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )

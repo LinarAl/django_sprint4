@@ -26,7 +26,8 @@ django_sprint4
 Добавлены адрес страницы логина LOGIN_URL и LOGIN_REDIRECT_URL. Добавоены
 разрешенные хосты ALLOWED_HOSTS. Установлены и зарегестрированы стили 
 django_bootstrap5. Зарегестрировано приложение core. Добавлена константа
-CSRF_FAILURE_VIEW - ошибка проверки CSRF (403).
+CSRF_FAILURE_VIEW - ошибка проверки CSRF (403). Добавлена константа MEDIA_ROOT
+с путем до папки media.
 """
 
 from pathlib import Path
@@ -59,6 +60,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
 AUTH_USER_MODEL = 'users.MyUser'
+
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Application definition
 

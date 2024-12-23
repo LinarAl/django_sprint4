@@ -7,6 +7,7 @@
 from django.db import models
 
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -148,9 +149,45 @@ class Post(BaseModel):
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
 
+    def get_absolute_url(self):
+        """Возвращаем URL объекта."""
+        return reverse('blog:post_detail', kwargs={'id': self.id})
+
     def __str__(self):
         """Магический метод str.
         Переопредеялем метод str для вывода читаемых названий объектов в админ
         панель. Строка ограничена до 50 символов.
         """
         return self.title[:50]
+
+
+class Comment(models.Model):
+    """Модель комментария."""
+
+    text = models.TextField(verbose_name='Текст комментария')
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Пост'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Добавлено'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Автор публикации'
+    )
+
+    class Meta:
+        """Метамодель."""
+
+        ordering = ('created_at',)
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        """Магический метод str."""
+        return self.text[:50]

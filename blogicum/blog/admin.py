@@ -7,7 +7,7 @@ admin.ModelAdmin, в унаследованном классе переопре�
 
 from django.contrib import admin
 
-from .models import Category, Location, Post
+from .models import Category, Location, Post, Comment
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -60,6 +60,18 @@ class LocationAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
+class CommentAdmin(admin.ModelAdmin):
+    """Отображение модели Comment."""
+
+    list_display = (
+        'text',
+        'author',
+        'created_at',
+        'post'
+    )
+
+
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Post, PostAdmin)
+admin.site.register(Comment, CommentAdmin)

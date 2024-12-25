@@ -1,9 +1,4 @@
-"""Обработка запросов.
-Импорты datetime, функции render и get_object_or_404, моделей Post и Category.
-Три функции обрабатывают запросы: index - страница с постами,
-post_detail - страница с информацией о конкретном посте,
-category_posts - страница с категорией постов.
-"""
+"""Обработка запросов."""
 from django.db.models import Count
 
 from django.views.generic import (
@@ -22,7 +17,6 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.http import HttpResponseRedirect
 from users.forms import CustomUserChangeForm
 User = get_user_model()
 
@@ -37,26 +31,22 @@ class OnlyAuthorMixin(UserPassesTestMixin):
 @login_required
 def add_comment(request, post_id):
     """Создание комментрария.
-    Отображается на странице PostDetailView
+    Отображается на странице PostDetail.
     """
-    # Получаем объект дня рождения или выбрасываем 404 ошибку.
     post = get_object_or_404(Post, pk=post_id)
-    # Функция должна обрабатывать только POST-запросы.
     form = CommentForm(request.POST)
+
     if form.is_valid():
-        # Создаём объект поздравления, но не сохраняем его в БД.
         comment = form.save(commit=False)
-        # В поле author передаём объект автора поздравления.
         comment.author = request.user
-        # В поле birthday передаём объект дня рождения.
         comment.post = post
-        # Сохраняем объект в БД.
         comment.save()
-    # Перенаправляем пользователя назад, на страницу дня рождения.
     return redirect('blog:post_detail', post_id=post_id)
 
 
 class EditComment(OnlyAuthorMixin, UpdateView):
+    """Изменение комментрария."""
+
     model = Comment
     form_class = CommentForm
     template_name = 'blog/comment.html'
@@ -69,6 +59,8 @@ class EditComment(OnlyAuthorMixin, UpdateView):
 
 
 class DeleteComment(OnlyAuthorMixin, DeleteView):
+    """Удаление комментрария."""
+
     model = Comment
     template_name = 'blog/comment.html'
     pk_url_kwarg = 'comment_id'
@@ -83,25 +75,14 @@ class PostListView(ListView):
     """Cтраница с постами."""
 
     paginate_by = 10
-    # ordering = '-pub_date', 'title'
     model = Post
     template_name = 'blog/index.html'
-    # context_object_name = 'page_obj'
 
     def get_queryset(self):
 
         return sql_filters(Post.objects.select_related(
             'category', 'location', 'author',)).annotate(
                 comment_count=Count("comments")).order_by('-pub_date')
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    # #         'category', 'author', 'location',)
-    # #     paginator = Paginator(posts, 10)
-    # #     page_number = self.request.GET.get('page')
-    # #     page_obj = paginator.get_page(page_number)
-    # #     context['page_obj'] = page_obj
-    #     return context
 
 
 class PostDetailView(DetailView):
@@ -125,12 +106,8 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Записываем в переменную form пустой объект формы.
         context['form'] = CommentForm()
-        # Запрашиваем все поздравления для выбранного дня рождения.
         context['comments'] = (
-            # Дополнительно подгружаем авторов комментариев,
-            # чтобы избежать множества запросов к БД.
             self.object.comments.select_related(
                 'author')
         )
@@ -141,10 +118,8 @@ class CategoryPostsView(ListView):
     """Cтраница с постами по категории."""
 
     paginate_by = 10
-    # ordering = '-pub_date', 'title'
     model = Post
     template_name = 'blog/category.html'
-    # context_object_name = 'page_obj'
 
     def get_queryset(self):
         return sql_filters(Post.objects.select_related(
@@ -171,7 +146,6 @@ class ProfileView(ListView):
     paginate_by = 10
     model = Post
     template_name = 'blog/profile.html'
-    # context_object_name = 'page_obj'
 
     def get_queryset(self):
         """Запрос к бд с фильрами.
@@ -195,6 +169,8 @@ class ProfileView(ListView):
 
 
 class EditProfilView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """Страница редактирования профиля."""
+
     model = User
     template_name = 'blog/user.html'
     form_class = CustomUserChangeForm
@@ -209,7 +185,8 @@ class EditProfilView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         user_test_result = self.get_test_func()()
 
         if not user_test_result:
-            return redirect('blog:profile', username=self.get_object().username)
+            return redirect('blog:profile',
+                            username=self.get_object().username)
         return super().dispatch(request, *args, **kwargs)
 
 

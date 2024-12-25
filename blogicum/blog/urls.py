@@ -12,11 +12,8 @@ name.
 """
 
 
-from django.urls import path, reverse_lazy
+from django.urls import path
 from blog import views
-
-from users.forms import CustomUserChangeForm
-from django.views.generic.edit import UpdateView
 
 from django.contrib.auth import get_user_model
 
@@ -27,18 +24,16 @@ urlpatterns = [
     path('', views.PostListView.as_view(), name='index'),
     path('profile/<slug:username>/', views.ProfileView.as_view(),
          name='profile'),
-    # path('profile/<int:pk>/edit/',
-    #      views.EditProfile.as_view(), name='edit_profile'),
+    path('category/<slug:category_slug>/',
+         views.CategoryPostsView.as_view(), name='category_posts'),
 
-
-    path('profile/<int:post_id>/edit/', views.EditProfilView.as_view(),
-         name='edit_profile'),
+    path('profile/<int:post_id>/edit/',
+         views.EditProfilView.as_view(), name='edit_profile'),
 
     path('posts/<int:post_id>/', views.PostDetailView.as_view(),
          name='post_detail'),
 
-    path('category/<slug:category_slug>/',
-         views.CategoryPostsView.as_view(), name='category_posts'),
+
 
     path('posts/create/', views.PostCreateView.as_view(), name='create_post'),
     path('posts/<int:post_id>/edit/',

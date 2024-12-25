@@ -24,7 +24,7 @@ django_sprint4
 Добавлена константа с кастомной моделью пользователя AUTH_USER_MODEL. Подключен
 бэкенд EMAIL константы: EMAIL_BACKEND и путь до дериктории EMAIL_FILE_PATH.
 Добавлены адрес страницы логина LOGIN_URL и LOGIN_REDIRECT_URL. Добавоены
-разрешенные хосты ALLOWED_HOSTS. Установлены и зарегестрированы стили 
+разрешенные хосты ALLOWED_HOSTS. Установлены и зарегестрированы стили
 django_bootstrap5. Зарегестрировано приложение core. Добавлена константа
 CSRF_FAILURE_VIEW - ошибка проверки CSRF (403). Добавлена константа MEDIA_ROOT
 с путем до папки media.
@@ -43,7 +43,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-fn41u7c-1z+jwd#dvpeo0m1j-w^s5si#@!*x&4zx-!1!2u@+=h'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 LOGIN_URL = 'login'
 

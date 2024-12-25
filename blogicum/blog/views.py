@@ -22,8 +22,8 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-
-
+from django.http import HttpResponseRedirect
+from users.forms import CustomUserChangeForm
 User = get_user_model()
 
 
@@ -83,7 +83,7 @@ class PostListView(ListView):
     """Cтраница с постами."""
 
     paginate_by = 10
-    ordering = '-pub_date', 'title'
+    # ordering = '-pub_date', 'title'
     model = Post
     template_name = 'blog/index.html'
     # context_object_name = 'page_obj'
@@ -92,11 +92,10 @@ class PostListView(ListView):
 
         return sql_filters(Post.objects.select_related(
             'category', 'location', 'author',)).annotate(
-                comment_count=Count("comments"))
+                comment_count=Count("comments")).order_by('-pub_date')
 
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
-    #     print(context['paginator'].page(1).object_list)
     # #         'category', 'author', 'location',)
     # #     paginator = Paginator(posts, 10)
     # #     page_number = self.request.GET.get('page')
@@ -142,7 +141,7 @@ class CategoryPostsView(ListView):
     """Cтраница с постами по категории."""
 
     paginate_by = 10
-    ordering = '-pub_date', 'title'
+    # ordering = '-pub_date', 'title'
     model = Post
     template_name = 'blog/category.html'
     # context_object_name = 'page_obj'
@@ -150,12 +149,14 @@ class CategoryPostsView(ListView):
     def get_queryset(self):
         return sql_filters(Post.objects.select_related(
             'category', 'location', 'author'
-        ).filter(category__slug=self.kwargs['category_slug'])).annotate(comment_count=Count("comments"))
+        ).filter(category__slug=self.kwargs['category_slug'])).annotate(
+            comment_count=Count("comments")).order_by('-pub_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        category = Category.objects.get(
+        category = get_object_or_404(
+            Category.objects.all(),
             slug=self.kwargs['category_slug'],
             is_published=True
         )
@@ -168,7 +169,6 @@ class ProfileView(ListView):
     """Страница профиля пользователя."""
 
     paginate_by = 10
-    ordering = '-pub_date', 'title'
     model = Post
     template_name = 'blog/profile.html'
     # context_object_name = 'page_obj'
@@ -184,13 +184,33 @@ class ProfileView(ListView):
         return sql_filters(Post.objects.select_related(
             'category', 'location', 'author'
         ).filter(author__username=self.kwargs['username']).annotate(
-            comment_count=Count("comments")), author)
+            comment_count=Count("comments")).order_by('-pub_date'), author)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        profile = User.objects.get(username=self.kwargs['username'])
+        profile = get_object_or_404(
+            User.objects.all(), username=self.kwargs['username'])
         context['profile'] = profile
         return context
+
+
+class EditProfilView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = User
+    template_name = 'blog/user.html'
+    form_class = CustomUserChangeForm
+    success_url = reverse_lazy('blog:index')
+    pk_url_kwarg = 'post_id'
+
+    def test_func(self):
+        object = self.get_object()
+        return object.username == self.request.user
+
+    def dispatch(self, request, *args, **kwargs):
+        user_test_result = self.get_test_func()()
+
+        if not user_test_result:
+            return redirect('blog:profile', username=self.get_object().username)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -215,6 +235,15 @@ class PostUpdateView(OnlyAuthorMixin, UpdateView):
     form_class = PostForm
     template_name = 'blog/create.html'
     pk_url_kwarg = 'post_id'
+
+    def dispatch(self, request, *args, **kwargs):
+        user_test_result = self.get_test_func()()
+
+        if not self.request.user.is_authenticated or not user_test_result:
+            return redirect(reverse(
+                'blog:post_detail', kwargs={'post_id': self.kwargs['post_id']})
+            )
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse(

@@ -9,8 +9,8 @@ def sql_filters(sql_req, author=False):
     if not author:
         return sql_req.filter(
             is_published=True,
-            pub_date__time__lt=datetime.now(),
-            # pub_date__date__lt=now,
+            pub_date__lt=datetime.now(),
+            # pub_date__date__lt=datetime.now(),
             # pub_date__time__lt=now,
             category__is_published=True
         )

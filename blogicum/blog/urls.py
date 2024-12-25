@@ -31,16 +31,8 @@ urlpatterns = [
     #      views.EditProfile.as_view(), name='edit_profile'),
 
 
-    path(
-        'profile/<int:pk>/edit/',
-        UpdateView.as_view(
-            model=User,
-            template_name='blog/user.html',
-            form_class=CustomUserChangeForm,
-            success_url=reverse_lazy('blog:index'),
-        ),
-        name='edit_profile',
-    ),
+    path('profile/<int:post_id>/edit/', views.EditProfilView.as_view(),
+         name='edit_profile'),
 
     path('posts/<int:post_id>/', views.PostDetailView.as_view(),
          name='post_detail'),

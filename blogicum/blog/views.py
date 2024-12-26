@@ -22,6 +22,7 @@ User = get_user_model()
 
 
 class OnlyAuthorMixin(UserPassesTestMixin):
+    """Миксин проверки авторства."""
 
     def test_func(self):
         object = self.get_object()

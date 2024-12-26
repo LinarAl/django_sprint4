@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.views.generic import (
     CreateView, DeleteView, DetailView, ListView, UpdateView
 )
-
+from users.forms import CustomUserChangeForm
 from django.shortcuts import get_object_or_404, redirect
 from blog.models import Post, Category, Comment
 from .utils import sql_filters
@@ -17,7 +17,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from users.forms import CustomUserChangeForm
+
 User = get_user_model()
 
 
@@ -94,6 +94,10 @@ class PostDetailView(DetailView):
     pk_url_kwarg = 'post_id'
 
     def get_queryset(self):
+        """Запрос к бд с фильрами.
+        Если пользователь и автор профиля страницы совпадают, то пользователь
+        может просматривать неопубликованные посты.
+        """
         author = False
         if Post.objects.filter(
             id=self.kwargs['post_id'], author=self.request.user.id
@@ -168,7 +172,7 @@ class ProfileView(ListView):
         return context
 
 
-class EditProfilView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class EditProfilView(UserPassesTestMixin, UpdateView):
     """Страница редактирования профиля."""
 
     model = User
@@ -178,10 +182,12 @@ class EditProfilView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     pk_url_kwarg = 'post_id'
 
     def test_func(self):
+        """Проверка пользователя."""
         object = self.get_object()
-        return object.username == self.request.user
+        return str(object.username) == str(self.request.user)
 
     def dispatch(self, request, *args, **kwargs):
+        """Перенаправление пользователя не прошедшего проверку."""
         user_test_result = self.get_test_func()()
 
         if not user_test_result:
@@ -198,6 +204,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     template_name = 'blog/create.html'
 
     def form_valid(self, form):
+        """Заполнение автора в форме."""
         form.instance.author = self.request.user
         return super().form_valid(form)
 
@@ -214,6 +221,7 @@ class PostUpdateView(OnlyAuthorMixin, UpdateView):
     pk_url_kwarg = 'post_id'
 
     def dispatch(self, request, *args, **kwargs):
+        """Перенаправление пользователя не прошедшего проверку."""
         user_test_result = self.get_test_func()()
 
         if not self.request.user.is_authenticated or not user_test_result:

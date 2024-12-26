@@ -34,8 +34,8 @@ from django.urls import include, path, reverse_lazy
 from users.forms import CustomUserCreationForm
 from django.conf.urls.static import static
 
-handler404 = 'core.views.page_not_found'
-handler500 = 'core.views.page_server_error'
+handler404 = 'pages.views.page_not_found'
+handler500 = 'pages.views.page_server_error'
 
 urlpatterns = [
     path('', include('blog.urls')),

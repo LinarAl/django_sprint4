@@ -14,6 +14,7 @@ from .forms import CommentForm, PostForm
 from .mixins import OnlyAuthorMixin
 from .utils import sql_filters
 
+PAGINATION_ELEMENTS = 10
 User = get_user_model()
 
 
@@ -33,37 +34,34 @@ def add_comment(request, post_id):
     return redirect('blog:post_detail', post_id=post_id)
 
 
-class EditComment(OnlyAuthorMixin, UpdateView):
+class CommentMixin:
+    """Миксин для изменения и удаления комментрария."""
+    model = Comment
+    template_name = 'blog/comment.html'
+    pk_url_kwarg = 'comment_id'
+
+    def get_success_url(self):
+        return reverse(
+            'blog:post_detail', kwargs={'post_id': self.kwargs['post_id']}
+        )
+
+
+class EditComment(CommentMixin, OnlyAuthorMixin, UpdateView):
     """Изменение комментрария."""
 
-    model = Comment
     form_class = CommentForm
-    template_name = 'blog/comment.html'
-    pk_url_kwarg = 'comment_id'
-
-    def get_success_url(self):
-        return reverse(
-            'blog:post_detail', kwargs={'post_id': self.kwargs['post_id']}
-        )
 
 
-class DeleteComment(OnlyAuthorMixin, DeleteView):
+class DeleteComment(CommentMixin, OnlyAuthorMixin, DeleteView):
     """Удаление комментрария."""
 
-    model = Comment
-    template_name = 'blog/comment.html'
-    pk_url_kwarg = 'comment_id'
-
-    def get_success_url(self):
-        return reverse(
-            'blog:post_detail', kwargs={'post_id': self.kwargs['post_id']}
-        )
+    pass
 
 
 class PostListView(ListView):
     """Cтраница с постами."""
 
-    paginate_by = 10
+    paginate_by = PAGINATION_ELEMENTS
     model = Post
     template_name = 'blog/index.html'
 
@@ -110,7 +108,7 @@ class PostDetailView(DetailView):
 class CategoryPostsView(ListView):
     """Cтраница с постами по категории."""
 
-    paginate_by = 10
+    paginate_by = PAGINATION_ELEMENTS
     model = Post
     template_name = 'blog/category.html'
 
@@ -136,7 +134,7 @@ class CategoryPostsView(ListView):
 class ProfileView(ListView):
     """Страница профиля пользователя."""
 
-    paginate_by = 10
+    paginate_by = PAGINATION_ELEMENTS
     model = Post
     template_name = 'blog/profile.html'
 

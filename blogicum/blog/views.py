@@ -1,22 +1,17 @@
 """Обработка запросов."""
-from django.db.models import Count
-
-from django.views.generic import (
-    CreateView, DeleteView, DetailView, ListView, UpdateView
-)
-from users.forms import CustomUserChangeForm
-from django.shortcuts import get_object_or_404, redirect
-from blog.models import Post, Category, Comment
-from .utils import sql_filters
+from blog.models import Category, Comment, Post
 from django.contrib.auth import get_user_model
-from django.urls import reverse_lazy
-
-from .forms import PostForm, CommentForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.mixins import UserPassesTestMixin
-
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Count
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
+from users.forms import CustomUserChangeForm
+
+from .forms import CommentForm, PostForm
+from .utils import sql_filters
 
 User = get_user_model()
 

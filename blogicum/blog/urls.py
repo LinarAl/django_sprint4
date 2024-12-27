@@ -12,10 +12,9 @@ name.
 """
 
 
-from django.urls import path
 from blog import views
-
 from django.contrib.auth import get_user_model
+from django.urls import path
 
 User = get_user_model()
 

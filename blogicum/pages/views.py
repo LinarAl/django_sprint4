@@ -3,8 +3,8 @@ about - страница с информацией о проекте, rules - с
 пользователей.
 """
 
-from django.views.generic import TemplateView
 from django.shortcuts import render
+from django.views.generic import TemplateView
 
 
 class AboutPage(TemplateView):

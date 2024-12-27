@@ -14,7 +14,7 @@ from .forms import CommentForm, PostForm
 from .mixins import OnlyAuthorMixin
 from .utils import sql_filters
 
-PAGINATION_ELEMENTS = 10
+NUMBER_OF_POSTS_PER_PAGE = 10
 User = get_user_model()
 
 
@@ -62,7 +62,7 @@ class DeleteComment(CommentMixin, OnlyAuthorMixin, DeleteView):
 class PostListView(ListView):
     """Cтраница с постами."""
 
-    paginate_by = PAGINATION_ELEMENTS
+    paginate_by = NUMBER_OF_POSTS_PER_PAGE
     model = Post
     template_name = 'blog/index.html'
 
@@ -109,7 +109,7 @@ class PostDetailView(DetailView):
 class CategoryPostsView(ListView):
     """Cтраница с постами по категории."""
 
-    paginate_by = PAGINATION_ELEMENTS
+    paginate_by = NUMBER_OF_POSTS_PER_PAGE
     model = Post
     template_name = 'blog/category.html'
 
@@ -135,7 +135,7 @@ class CategoryPostsView(ListView):
 class ProfileView(ListView):
     """Страница профиля пользователя."""
 
-    paginate_by = PAGINATION_ELEMENTS
+    paginate_by = NUMBER_OF_POSTS_PER_PAGE
     model = Post
     template_name = 'blog/profile.html'
 

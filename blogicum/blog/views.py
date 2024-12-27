@@ -11,17 +11,10 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 from users.forms import CustomUserChangeForm
 
 from .forms import CommentForm, PostForm
+from .mixins import OnlyAuthorMixin
 from .utils import sql_filters
 
 User = get_user_model()
-
-
-class OnlyAuthorMixin(UserPassesTestMixin):
-    """Миксин проверки авторства."""
-
-    def test_func(self):
-        object = self.get_object()
-        return object.author == self.request.user
 
 
 @login_required

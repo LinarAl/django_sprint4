@@ -36,6 +36,7 @@ def add_comment(request, post_id):
 
 class CommentMixin:
     """Миксин для изменения и удаления комментрария."""
+
     model = Comment
     template_name = 'blog/comment.html'
     pk_url_kwarg = 'comment_id'

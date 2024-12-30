@@ -31,10 +31,6 @@ class BaseModel(models.Model):
     )
 
     class Meta:
-        """Метамодель.
-        В основном используется для изменения поведения полей модели.
-        abstract - указывает, что модель BaseModel абстрактная.
-        """
 
         abstract = True
 
@@ -59,19 +55,12 @@ class Category(BaseModel):
     )
 
     class Meta:
-        """Метамодель.
-        verbose_name - используется для отображения названия в админ панеле.
-        verbose_name_plural - человекочитаемое название во множественном числе.
-        """
 
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        """Магический метод str.
-        Переопредеялем метод str для вывода читаемых названий объектов в админ
-        панель. Строка ограничена до 50 символов.
-        """
+
         return self.title[:50]
 
 
@@ -83,19 +72,12 @@ class Location(BaseModel):
     name = models.CharField(max_length=256, verbose_name='Название места')
 
     class Meta:
-        """Метамодель.
-        verbose_name - используется для отображения названия в админ панеле.
-        verbose_name_plural - человекочитаемое название во множественном числе.
-        """
 
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
 
     def __str__(self):
-        """Магический метод str.
-        Переопредеялем метод str для вывода читаемых названий объектов в админ
-        панель. Строка ограничена до 50 символов.
-        """
+
         return self.name[:50]
 
 
@@ -141,23 +123,14 @@ class Post(BaseModel):
     image = models.ImageField('Фото', upload_to='posts_images', blank=True)
 
     class Meta:
-        """Метамодель.
-        verbose_name - используется для отображения названия в админ панеле.
-        verbose_name_plural - человекочитаемое название во множественном числе.
-        """
 
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
 
     def get_absolute_url(self):
-        """Возвращаем URL объекта."""
         return reverse('blog:post_detail', kwargs={'id': self.id})
 
     def __str__(self):
-        """Магический метод str.
-        Переопредеялем метод str для вывода читаемых названий объектов в админ
-        панель. Строка ограничена до 50 символов.
-        """
         return self.title[:50]
 
 
@@ -182,12 +155,10 @@ class Comment(models.Model):
     )
 
     class Meta:
-        """Метамодель."""
 
         ordering = ('created_at',)
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        """Магический метод str."""
         return self.text[:50]

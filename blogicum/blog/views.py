@@ -1,5 +1,5 @@
 """Обработка запросов."""
-from blog.models import Category, Comment, Post
+from blog.models import Category, Post
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -11,7 +11,7 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 from users.forms import CustomUserChangeForm
 
 from .forms import CommentForm, PostForm
-from .mixins import OnlyAuthorMixin
+from .mixins import OnlyAuthorMixin, CommentMixin
 from .utils import sql_filters
 
 NUMBER_OF_POSTS_PER_PAGE = 10
@@ -32,19 +32,6 @@ def add_comment(request, post_id):
         comment.post = post
         comment.save()
     return redirect('blog:post_detail', post_id=post_id)
-
-
-class CommentMixin:
-    """Миксин для изменения и удаления комментрария."""
-
-    model = Comment
-    template_name = 'blog/comment.html'
-    pk_url_kwarg = 'comment_id'
-
-    def get_success_url(self):
-        return reverse(
-            'blog:post_detail', kwargs={'post_id': self.kwargs['post_id']}
-        )
 
 
 class EditComment(CommentMixin, OnlyAuthorMixin, UpdateView):
